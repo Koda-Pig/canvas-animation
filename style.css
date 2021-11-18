@@ -2,10 +2,45 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 canvas {
   position: absolute;
   top: 0;
   left: 0;
   background: #000;
+}
+
+form {
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  background: #fff;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.2rem;
+  opacity: 0.9;
+  transition: opacity 200ms ease-out;
+}
+
+form:hover {
+  opacity: 1;
+}
+
+input {
+  margin-bottom: 1.5rem;
+}
+
+input[type=color] {
+  max-width: 40px;
+  margin-bottom:0px;
+}
+
+div.colorPicker {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
 }
