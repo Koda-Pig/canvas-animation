@@ -2,6 +2,10 @@ let canvas;
 let ctx;
 let flowField;
 let flowFieldAnimation;
+let userVelocity;
+let userLineWidth;
+let userVelocityCtrl;
+let userLineWidthCtrl;
 
 // to ensure everything is loaded before the script runs:
 window.onload = function() {
@@ -9,18 +13,11 @@ window.onload = function() {
   ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  userVelocityCtrl = document.querySelector('#userVelocity');
+  userLineWidthCtrl = document.querySelector('#userLineWidth');
   flowField = new FlowFieldEffect(ctx, canvas.width, canvas.height);
   flowField.animate(0);
 }
-
-// to make canvas responsve on window resize: - something i did broke this
-// window.addEventListener('resize', function() {
-//   cancelAnimationFrame(flowFieldAnimation);
-//   canvas.width = window.innerWidth;
-//   canvas.height = window.innerHeight;
-//   flowField = new FlowFieldEffect(canvas.width, canvas.height);
-//   flowField.animate(0);
-// });
 
 // mouse functionality
 const mouse = {
@@ -32,74 +29,34 @@ window.addEventListener('mousemove', function(e) {
   mouse.y = e.y;  
 })
 
-// user controls
-let userVelocityCtrl = document.querySelector('#userVelocity');
-let userLineWidthCtrl = document.querySelector('#userLineWidth');
-let userDensityCtrl = document.querySelector('#userDensity');
-let userVelocity;
-let userLineWidth;
-let userDensity;
+window.addEventListener('mouseover', userControls);
 
-userVelocityCtrl.addEventListener('click', changeVelocity);
-userLineWidthCtrl.addEventListener('click', changeLineWidth);
-userDensityCtrl.addEventListener('click', changeDensity);
-
-function changeVelocity() {
-  userVelocity = (userVelocityCtrl.value) * 0.01;
-  flowField.vr = userVelocity;
+function userControls() {
+  userVelocityCtrl.addEventListener('click', changeVelocity);
+  userLineWidthCtrl.addEventListener('click', changeLineWidth);
+  
+  function changeVelocity() {
+    flowField.vr = userVelocityCtrl.value * 0.01;
+  }
+  
+  function changeLineWidth() {
+    flowField.ctx.lineWidth = userLineWidthCtrl.value;
+  }
 }
 
-function changeLineWidth() {
-  userLineWidth = userLineWidthCtrl.value;
-  flowField.ctx.lineWidth = userLineWidth;
-}
-
-function changeDensity() {
-  userDensity = userDensityCtrl.value;
-}
-
-/* change colours - not working 
-    I'm having trouble accessing the colors in the 
-    create gradient method of flowFieldEffect
-for (let i = 0; i < colorPicker.length; i++) {
-  colorPicker[i].addEventListener('click', changeColors);
-}
-let colorPicker = document.querySelectorAll('.colorPick')
-let colorCtrl1 = document.getElementById('color1');
-let colorCtrl2 = document.getElementById('color2');
-let colorCtrl3 = document.getElementById('color3');
-let colorCtrl4 = document.getElementById('color4');
-let colorCtrl5 = document.getElementById('color5');
-let colorCtrl6 = document.getElementById('color6');
-function changeColors() {
-  // struggling with this one.
-}
-*/
-// END USER CONROLS
-
-
-// classes encapsulate data, then work on the data with their methods
-// encapsulation is the bundling of data and methods that act on that data
-// in a way, that access to that data is restricted from outside the bundle
-
-  // sidenote: function declarations are hoisted, class declarations are not
 class FlowFieldEffect {
-  // private class fields (begin with #)
-  // #ctx;
   #width;
   #height;
-  // constructor is a mandatory method all classes must have
   constructor(ctx, width, height) {
-    // this.ctx = ctx;
     this.ctx = ctx;
-    this.ctx.lineWidth = 3;
+    this.ctx.lineWidth = 2;
     this.#width = width;
     this.#height = height;
     this.angle = 0; 
     this.lastTime = 0;
-    this.interval = 1000/10;  // 60 FPS
+    this.interval = 1000/60;  // 60 FPS
     this.timer = 0; 
-    this.cellSize = 10;
+    this.cellSize = 12;
     this.gradient;
     this.createGradient();
     this.ctx.strokeStyle = this.gradient;
@@ -133,7 +90,7 @@ class FlowFieldEffect {
       distance = 50000;
     }
     let length = distance * 0.00008;
-    this.ctx.beginPath();  // start drawing a new shape
+    this.ctx.beginPath();
     this.ctx.moveTo(x, y);
     this.ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
     this.ctx.stroke();
