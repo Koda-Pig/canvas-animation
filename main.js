@@ -49,7 +49,7 @@ class FlowFieldEffect {
   #height;
   constructor(ctx, width, height) {
     this.ctx = ctx;
-    this.ctx.lineWidth = 2;
+    this.ctx.lineWidth = 1;
     this.#width = width;
     this.#height = height;
     this.angle = 0; 
@@ -61,7 +61,7 @@ class FlowFieldEffect {
     this.createGradient();
     this.ctx.strokeStyle = this.gradient;
     this.radius = 0;
-    this.vr = 0.03;    
+    this.vr = 0.01;    
   }
   createGradient() {
     this.color1 = '#8484ff';
@@ -91,7 +91,7 @@ class FlowFieldEffect {
     }
     let length = distance * 0.00008;
     this.ctx.beginPath();
-    this.ctx.moveTo(x, y);
+    this.ctx.moveTo(x, y)
     this.ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
     this.ctx.stroke();
   }
@@ -102,7 +102,7 @@ class FlowFieldEffect {
       this.ctx.clearRect(0, 0, this.#width, this.#height);
       this.angle += 0.3;
       this.radius += this.vr;
-      if (this.radius > 9 || this.radius < -9) {
+      if (this.radius > 12 || this.radius < -12) {
         this.radius *= -1;
       }
       for (let y = 0; y < this.#height; y += this.cellSize) {
